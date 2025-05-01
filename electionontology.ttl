@@ -1,0 +1,279 @@
+#
+# An Ontology for Linked Open Election Data 
+#
+
+
+@prefix : <http://example.com/election#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix schema: <http://schema.org/> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix cc: <http://creativecommons.org/ns#> .
+
+# Ontology Metadata
+<http://example.com/election>
+    a owl:Ontology ;
+    rdfs:label "Linked Open Election Ontology"@en ;
+    dcterms:title "An Ontology for Publishing Election Data as Linked Open Data"@en ;
+    dcterms:description """This ontology provides a framework for publishing election data in structured, machine-readable formats. It supports elections, referendums, and other democratic processes, ensuring interoperability and reusability."""@en ;
+    dc:creator <http://example.com/person/emeka-okoye> ;
+    dc:date "2025-05-01"^^xsd:date ;
+    cc:license <http://creativecommons.org/licenses/by-sa/4.0/> ;
+    owl:versionInfo "3.0.0" ;
+    owl:versionIRI <http://example.com/election/3.0.0> ;
+    owl:priorVersion <http://linkedopendatang.com/schemas/election/linkedopenelection.ttl> ;
+    dcterms:contributor "Global Election Data Community"@en ;
+    rdfs:comment """This ontology is modular, FAIR-compliant, and supports global election data. Modules include core election, campaign promises, voting systems, and geospatial data."""@en .
+
+<http://example.com/person/emeka-okoye> a foaf:Person ;
+    foaf:name "Emeka Azuka Okoye"@en ;
+    owl:sameAs <http://emeka.name.ng/data/profile.ttl#identity> ;
+    foaf:account <https://twitter.com/emekaokoye> .
+
+# Core Election Module
+:Poll a owl:Class ;
+    rdfs:label "Poll"@en ;
+    rdfs:subClassOf schema:Event ;
+    rdfs:comment "A voting event, such as an election or referendum, where voters express preferences."@en .
+
+:Election a owl:Class ;
+    rdfs:label "Election"@en ;
+    rdfs:subClassOf :Poll ;
+    rdfs:subClassOf schema:Event ;
+    rdfs:comment "A set of polls to select political leaders or decide on issues."@en .
+
+:Candidacy a owl:Class ;
+    rdfs:label "Candidacy"@en ;
+    rdfs:subClassOf schema:Role ;
+    rdfs:comment "A role representing an agent's participation in a specific election."@en .
+
+:PoliticalParty a owl:Class ;
+    rdfs:label "Political Party"@en ;
+    rdfs:subClassOf foaf:Organization, schema:Organization ;
+    rdfs:comment "An organized group of people with common political goals."@en .
+
+:PollingLocation a owl:Class ;
+    rdfs:label "Polling Location"@en ;
+    rdfs:subClassOf :Poll, schema:Place ;
+    rdfs:comment "A physical or digital location where voting occurs."@en .
+
+# Properties
+:totalVotes a owl:DatatypeProperty ;
+    rdfs:label "Total Votes"@en ;
+    rdfs:domain :Poll, :PollingLocation, :Candidacy ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "The total number of votes cast."@en .
+
+:registeredVoters a owl:DatatypeProperty ;
+    rdfs:label "Registered Voters"@en ;
+    rdfs:domain :Poll ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "The total number of registered voters for a poll."@en .
+
+:candidacyAgent a owl:ObjectProperty ;
+    rdfs:label "Candidacy Agent"@en ;
+    rdfs:domain :Candidacy ;
+    rdfs:range foaf:Agent ;
+    rdfs:comment "The agent (person, organization, or entity) participating as a candidate."@en .
+
+:candidacyElection a owl:ObjectProperty ;
+    rdfs:label "Candidacy Election"@en ;
+    rdfs:domain :Candidacy ;
+    rdfs:range :Election ;
+    rdfs:comment "The election in which the candidacy participates."@en .
+
+:isOfPoliticalParty a owl:ObjectProperty ;
+    rdfs:label "Is Of Political Party"@en ;
+    rdfs:domain :Candidacy ;
+    rdfs:range :PoliticalParty ;
+    rdfs:comment "The political party affiliation of a candidacy."@en .
+
+:name a owl:DatatypeProperty ;
+    rdfs:label "Name"@en ;
+    rdfs:subPropertyOf foaf:name ;
+    rdfs:domain :Candidacy, :PoliticalParty, :Poll, :Election ;
+    rdfs:range xsd:string ;
+    rdfs:comment "The name of an entity."@en .
+
+:isWinner a owl:DatatypeProperty ;
+    rdfs:label "Is Winner"@en ;
+    rdfs:domain :Candidacy ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "Whether the candidacy won the election."@en .
+
+:countingCompletedDate a owl:DatatypeProperty ;
+    rdfs:label "Counting Completed Date"@en ;
+    rdfs:domain :Poll, :Election ;
+    rdfs:range xsd:dateTime ;
+    rdfs:comment "The date and time when vote counting was completed."@en .
+
+:resultAnnouncedDate a owl:DatatypeProperty ;
+    rdfs:label "Result Announced Date"@en ;
+    rdfs:domain :Poll, :Election ;
+    rdfs:range xsd:dateTime ;
+    rdfs:comment "The date and time when results were announced."@en .
+
+:voteOutcome a owl:ObjectProperty ;
+    rdfs:label "Vote Outcome"@en ;
+    rdfs:domain :Candidacy ;
+    rdfs:range skos:Concept ;
+    rdfs:comment "The outcome of a vote (e.g., For, Against, Abstained)."@en .
+
+:hasEvidence a owl:ObjectProperty ;
+    rdfs:label "Has Evidence"@en ;
+    rdfs:domain :Poll, :Election ;
+    rdfs:range schema:CreativeWork ;
+    rdfs:comment "Evidence supporting claims like fraud or violence."@en .
+
+:visualization a owl:ObjectProperty ;
+    rdfs:label "Visualization"@en ;
+    rdfs:domain :Poll, :Election ;
+    rdfs:range dcat:Distribution ;
+    rdfs:comment "A link to a visualization (e.g., map, chart) of the data."@en .
+
+# Campaign Promise Module
+:CampaignPromise a owl:Class ;
+    rdfs:label "Campaign Promise"@en ;
+    rdfs:subClassOf schema:CommunicateAction ;
+    rdfs:comment "A promise made by a candidacy during an election campaign."@en .
+
+:promiseTopic a owl:ObjectProperty ;
+    rdfs:label "Promise Topic"@en ;
+    rdfs:domain :CampaignPromise ;
+    rdfs:range skos:Concept ;
+    rdfs:comment "The topic of the campaign promise (e.g., healthcare, education)."@en .
+
+:promiseDate a owl:DatatypeProperty ;
+    rdfs:label "Promise Date"@en ;
+    rdfs:domain :CampaignPromise ;
+    rdfs:range xsd:date ;
+    rdfs:comment "The date the promise was made."@en .
+
+:hasSource a owl:ObjectProperty ;
+    rdfs:label "Has Source"@en ;
+    rdfs:domain :CampaignPromise ;
+    rdfs:range schema:CreativeWork ;
+    rdfs:comment "A source (e.g., video, article) supporting the promise."@en .
+
+# Voting System Module
+:VotingSystem a skos:ConceptScheme ;
+    rdfs:label "Voting System Taxonomy"@en ;
+    rdfs:comment "A taxonomy of voting systems used in elections."@en .
+
+:FirstPastThePost a skos:Concept ;
+    skos:inScheme :VotingSystem ;
+    skos:prefLabel "First Past the Post"@en ;
+    rdfs:comment "A voting system where the candidate with the most votes wins."@en .
+
+:RankedChoice a skos:Concept ;
+    skos:inScheme :VotingSystem ;
+    skos:prefLabel "Ranked Choice"@en ;
+    rdfs:comment "A voting system where voters rank candidates in order of preference."@en .
+
+:VoteOutcome a skos:ConceptScheme ;
+    rdfs:label "Vote Outcome Taxonomy"@en ;
+    rdfs:comment "A taxonomy of possible vote outcomes."@en .
+
+:For a skos:Concept ;
+    skos:inScheme :VoteOutcome ;
+    skos:prefLabel "For"@en .
+
+:Against a skos:Concept ;
+    skos:inScheme :VoteOutcome ;
+    skos:prefLabel "Against"@en .
+
+:FormallyAbstained a skos:Concept ;
+    skos:inScheme :VoteOutcome ;
+    skos:prefLabel "Formally Abstained"@en .
+
+:DidNotVote a skos:Concept ;
+    skos:inScheme :VoteOutcome ;
+    skos:prefLabel "Did Not Vote"@en .
+
+:PoliticalRole a skos:ConceptScheme ;
+    rdfs:label "Political Role Taxonomy"@en ;
+    rdfs:comment "A taxonomy of political roles."@en .
+
+:President a skos:Concept ;
+    skos:inScheme :PoliticalRole ;
+    skos:prefLabel "President"@en .
+
+:Governor a skos:Concept ;
+    skos:inScheme :PoliticalRole ;
+    skos:prefLabel "Governor"@en .
+
+# Geospatial Module
+:latitude a owl:DatatypeProperty ;
+    rdfs:label "Latitude"@en ;
+    rdfs:subPropertyOf geo:lat ;
+    rdfs:domain :PollingLocation ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "The latitude of a polling location."@en .
+
+:longitude a owl:DatatypeProperty ;
+    rdfs:label "Longitude"@en ;
+    rdfs:subPropertyOf geo:long ;
+    rdfs:domain :PollingLocation ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "The longitude of a polling location."@en .
+
+# Provenance Tracking
+:wasDerivedFrom a owl:ObjectProperty ;
+    rdfs:label "Was Derived From"@en ;
+    rdfs:subPropertyOf prov:wasDerivedFrom ;
+    rdfs:domain :Poll, :Election, :CampaignPromise ;
+    rdfs:range schema:CreativeWork ;
+    rdfs:comment "The source from which the data was derived."@en .
+
+# SHACL Shapes
+:PollShape a sh:NodeShape ;
+    sh:targetClass :Poll ;
+    sh:property [
+        sh:path :totalVotes ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:maxCount 1 ;
+        sh:message "Total votes must be a non-negative integer."@en
+    ] ;
+    sh:property [
+        sh:path :registeredVoters ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:maxCount 1 ;
+        sh:message "Registered voters must be a non-negative integer."@en
+    ] .
+
+:CandidacyShape a sh:NodeShape ;
+    sh:targetClass :Candidacy ;
+    sh:property [
+        sh:path :candidacyAgent ;
+        sh:class foaf:Agent ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Candidacy must have exactly one agent."@en
+    ] ;
+    sh:property [
+        sh:path :candidacyElection ;
+        sh:class :Election ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Candidacy must be linked to exactly one election."@en
+    ] .
+
+:CampaignPromiseShape a sh:NodeShape ;
+    sh:targetClass :CampaignPromise ;
+    sh:property [
+        sh:path :hasSource ;
+        sh:class schema:CreativeWork ;
+        sh:minCount 1 ;
+        sh:message "Campaign promise must have at least one source."@en
+    ] .
