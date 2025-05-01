@@ -1,0 +1,98 @@
+@prefix : <http://example.com/election#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix schema: <http://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+
+# 2020 U.S. Presidential Election
+:Election2020USA a :Election ;
+    schema:name "2020 U.S. Presidential Election"@en ;
+    :hasVotingSystem :FirstPastThePost ;
+    :totalVotes 159000000 ;
+    :registeredVoters 239000000 ;
+    :countingCompletedDate "2020-11-06T12:00:00Z"^^xsd:dateTime ;
+    :resultAnnouncedDate "2020-11-07T12:00:00Z"^^xsd:dateTime ;
+    :visualization <http://example.com/viz/2020usa-map> .
+
+:JoeBidenPerson a foaf:Person ;
+    foaf:name "Joe Biden"@en .
+
+:JoeBidenCandidacy a :Candidacy ;
+    :name "Joe Biden"@en ;
+    :candidacyAgent :JoeBidenPerson ;
+    :candidacyElection :Election2020USA ;
+    :isOfPoliticalParty :DemocraticParty ;
+    :totalVotes 81268924 ;
+    :isWinner true ;
+    :voteOutcome :For .
+
+:DonaldTrumpPerson a foaf:Person ;
+    foaf:name "Donald Trump"@en .
+
+:DonaldTrumpCandidacy a :Candidacy ;
+    :name "Donald Trump"@en ;
+    :candidacyAgent :DonaldTrumpPerson ;
+    :candidacyElection :Election2020USA ;
+    :isOfPoliticalParty :RepublicanParty ;
+    :totalVotes 74216154 ;
+    :isWinner false ;
+    :voteOutcome :Against .
+
+:DemocraticParty a :PoliticalParty ;
+    schema:name "Democratic Party"@en .
+
+:RepublicanParty a :PoliticalParty ;
+    schema:name "Republican Party"@en .
+
+:PennsylvaniaPoll2020 a :PollingLocation ;
+    schema:name "Pennsylvania State Poll"@en ;
+    :hasElection :Election2020USA ;
+    :latitude "40.7608"^^xsd:decimal ;
+    :longitude "-77.0369"^^xsd:decimal ;
+    :totalVotes 6900000 ;
+    :registeredVoters 9100000 ;
+    :countingCompletedDate "2020-11-06T12:00:00Z"^^xsd:dateTime .
+
+# 2022 Pennsylvania Gubernatorial Election (Hypothetical)
+:Election2022PA a :Election ;
+    schema:name "2022 Pennsylvania Gubernatorial Election"@en ;
+    :hasVotingSystem :FirstPastThePost ;
+    :totalVotes 5600000 ;
+    :registeredVoters 9100000 ;
+    :countingCompletedDate "2022-11-09T12:00:00Z"^^xsd:dateTime ;
+    :resultAnnouncedDate "2022-11-10T12:00:00Z"^^xsd:dateTime .
+
+:JoshShapiroPerson a foaf:Person ;
+    foaf:name "Josh Shapiro"@en .
+
+:JoshShapiroCandidacy a :Candidacy ;
+    :name "Josh Shapiro"@en ;
+    :candidacyAgent :JoshShapiroPerson ;
+    :candidacyElection :Election2022PA ;
+    :isOfPoliticalParty :DemocraticParty ;
+    :totalVotes 3100000 ;
+    :isWinner true ;
+    :voteOutcome :For .
+
+:DougMastrianoPerson a foaf:Person ;
+    foaf:name "Doug Mastriano"@en .
+
+:DougMastrianoCandidacy a :Candidacy ;
+    :name "Doug Mastriano"@en ;
+    :candidacyAgent :DougMastrianoPerson ;
+    :candidacyElection :Election2022PA ;
+    :isOfPoliticalParty :RepublicanParty ;
+    :totalVotes 2500000 ;
+    :isWinner false ;
+    :voteOutcome :Against .
+
+:PennsylvaniaPoll2022 a :PollingLocation ;
+    schema:name "Philadelphia County Poll"@en ;
+    :hasElection :Election2022PA ;
+    :latitude "39.9526"^^xsd:decimal ;
+    :longitude "-75.1652"^^xsd:decimal ;
+    :totalVotes 700000 ;
+    :registeredVoters 1100000 ;
+    :countingCompletedDate "2022-11-09T12:00:00Z"^^xsd:dateTime .
